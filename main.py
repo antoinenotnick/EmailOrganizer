@@ -24,7 +24,7 @@ def authenticate():
         else:
             # Create OAuth 2.0 flow using the client secrets file
             flow = InstalledAppFlow.from_client_secrets_file(
-                r'C:\Users\antho\OneDrive\Documents\VS_Code\GmailOrganizer\client_secret_321183515633-oq3n3rv1mi6rdj7s1mgq0ko1vopji310.apps.googleusercontent.com.json', scopes=SCOPES)
+                r'path\to\jsonclientsecretkey', scopes=SCOPES)
             
             creds = flow.run_local_server(port=0)
 
@@ -56,17 +56,15 @@ def main():
         creds = authenticate()
         service = build('gmail', 'v1', credentials=creds)
 
-        while True:
-            try:
-                # Fetch emails with a specific query
-                emails = fetch_emails(service, query= 'from:no-reply@duolingo.com')          #input('from:'))
+        query = input('from:')
+        while fetch_emails(service, query=query):
+            # Fetch emails with a specific query
+            emails = fetch_emails(service, query=query)
 
-                # Print email IDs and delete emails
-                for email in emails:
-                    print(email['id'])
-                    delete_email(service, email['id'])
-            except KeyboardInterrupt:
-                continue
+            # Print email IDs and delete emails
+            for email in emails:
+                print(email['id'])
+                delete_email(service, email['id'])
 
     
     except Exception as e:
